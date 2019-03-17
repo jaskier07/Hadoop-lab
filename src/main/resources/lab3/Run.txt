@@ -4,14 +4,22 @@ export HADOOP_CLASSPATH=$JAVA_HOME/lib/tools.jar
 
 // Percentage (exercise 1)
 hadoop com.sun.tools.javac.Main Percentage.java -d build
-hdfs dfs -rm -r -skipTrash -f lab1/Percentage-output/
+hdfs dfs -rm -r -skipTrash -f output/Percentage/
 jar -cvf Percentage.jar -C build/ ./
-hadoop jar Percentage.jar Percentage -D percentage=10 /user/adampap/WHVsmall lab1/Percentage-output
-hadoop fs -cat lab1/Percentage-output/part*
+hadoop jar Percentage.jar Percentage -D percentage=10 /user/adampap/WHVsmall output/Percentage
+hadoop fs -cat output/Percentage/part*
 
 // Top visitors (exercise 2)
 hadoop com.sun.tools.javac.Main TopVisitors.java -d build
-hdfs dfs -rm -r -skipTrash -f lab1/TopVisitors-output/
+hdfs dfs -rm -r -skipTrash -f output/TopVisitors/
 jar -cvf TopVisitors.jar -C build/ ./
-hadoop jar TopVisitors.jar TopVisitors -D percentage=90 /user/adampap/WHVsmall lab1/TopVisitors-output
-hadoop fs -cat lab1/TopVisitors-output/part*
+hadoop jar TopVisitors.jar TopVisitors -D percentage=90 /user/adampap/WHVsmall output/TopVisitors
+hadoop fs -cat output/TopVisitors/part*
+
+// Visitor statistics (exercise 3)
+hadoop com.sun.tools.javac.Main VisitorStatistics.java -d build
+hdfs dfs -rm -r -skipTrash -f output/VisitorStatistics/
+jar -cvf VisitorStatistics.jar -C build/ ./
+hadoop jar VisitorStatistics.jar VisitorStatistics -D percentage=90 /user/adampap/WHVsmall output/VisitorStatistics
+hadoop fs -cat output/VisitorStatistics/part*
+
