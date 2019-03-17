@@ -39,7 +39,7 @@ public class TopTitleStatistics extends Configured implements Tool {
     public int run(String[] args) throws Exception {
         Configuration conf = this.getConf();
         FileSystem fs = FileSystem.get(conf);
-        Path tmpPath = new Path("/user/lada14/lab1/tmp/");
+        Path tmpPath = new Path("/user/lada14/lab1-2/tmp/");
         fs.delete(tmpPath, true);
 
         Job jobA = Job.getInstance(conf, "Title Count");

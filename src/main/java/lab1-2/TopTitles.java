@@ -39,7 +39,7 @@ public class TopTitles extends Configured implements Tool {
     public int run(String[] args) throws Exception {
         Configuration conf = this.getConf();
         FileSystem fs = FileSystem.get(conf);
-        Path tmpPath = new Path("/user/lada14/lab1/temp");
+        Path tmpPath = new Path("/user/lada14/lab1-2/temp");
         fs.delete(tmpPath, true);
 
         Job jobA = Job.getInstance(conf, "Title Count");
@@ -153,7 +153,7 @@ public class TopTitles extends Configured implements Tool {
 
     public static class TopTitlesMap extends Mapper<Text, Text, NullWritable, TextArrayWritable> {
         Integer N;
-        TreeSet<Pair1<Integer, String>> set;
+        TreeSet<lab1.Pair1<Integer, String>> set;
 
         @Override
         protected void setup(Context context) throws IOException,InterruptedException {
@@ -164,13 +164,13 @@ public class TopTitles extends Configured implements Tool {
 
         @Override
         public void map(Text key, Text value, Context context) throws IOException, InterruptedException {
-            set.add(new Pair1<Integer, String>(new Integer(value.toString()), key.toString()));
+            set.add(new lab1.Pair1<Integer, String>(new Integer(value.toString()), key.toString()));
         }
 
         @Override
         protected void cleanup(Context context) throws IOException, InterruptedException {
             for (int i = 0; i < N; i++) {
-                Pair1<Integer, String> last = set.pollLast();
+                lab1.Pair1<Integer, String> last = set.pollLast();
                 if (last != null) {
                     String[] pair = { last.first.toString(), last.second };
                     context.write(NullWritable.get(), new TextArrayWritable(pair));

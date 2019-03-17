@@ -55,7 +55,7 @@ public class TopPopularLinks extends Configured implements Tool {
         Configuration conf = this.getConf();
         Job job = Job.getInstance(conf, "Orphan pages");
         FileSystem fs = FileSystem.get(conf);
-        Path path = new Path("/user/lada14/lab1/tmp/");
+        Path path = new Path("/user/lada14/lab1-2/tmp/");
         fs.delete(path, true);
 
         // REDUCE
@@ -125,7 +125,7 @@ public class TopPopularLinks extends Configured implements Tool {
     }
     public static class TopLinksMap extends Mapper<Text, Text, NullWritable, IntArrayWritable> {
         Integer N;
-        TreeSet<Pair1<Integer, Integer>> set = new TreeSet<>();
+        TreeSet<Pair3<Integer, Integer>> set = new TreeSet<>();
 
         @Override
         protected void setup(Context context) throws IOException,InterruptedException {
@@ -137,14 +137,14 @@ public class TopPopularLinks extends Configured implements Tool {
         public void map(Text key, Text value, Context context) throws IOException, InterruptedException {
             Integer key2 = new Integer(key.toString());
             Integer count = new Integer(value.toString());
-            set.add(new Pair1<Integer, Integer>(count, key2));
+            set.add(new Pair3<Integer, Integer>(count, key2));
         }
 
 
         @Override
         protected void cleanup(Context context) throws IOException, InterruptedException {
             for (int i = 0; i < N; i++) {
-                Pair1<Integer, Integer> last = set.pollLast();
+                Pair3<Integer, Integer> last = set.pollLast();
                 if (last != null) {
                     Integer[] intArray = { last.first, last.second };
                     IntArrayWritable array = new IntArrayWritable(intArray);
@@ -176,7 +176,7 @@ public class TopPopularLinks extends Configured implements Tool {
 // >>> Don't Change
 class Pair3<A extends Comparable<? super A>,
         B extends Comparable<? super B>>
-        implements Comparable<Pair1<A, B>> {
+        implements Comparable<Pair3<A, B>> {
 
     public final A first;
     public final B second;
@@ -188,12 +188,12 @@ class Pair3<A extends Comparable<? super A>,
 
     public static <A extends Comparable<? super A>,
             B extends Comparable<? super B>>
-    Pair1<A, B> of(A first, B second) {
-        return new Pair1<A, B>(first, second);
+    Pair3<A, B> of(A first, B second) {
+        return new Pair3<A, B>(first, second);
     }
 
     @Override
-    public int compareTo(Pair1<A, B> o) {
+    public int compareTo(Pair3<A, B> o) {
         int cmp = o == null ? 1 : (this.first).compareTo(o.first);
         return cmp == 0 ? (this.second).compareTo(o.second) : cmp;
     }
@@ -209,12 +209,12 @@ class Pair3<A extends Comparable<? super A>,
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof Pair1))
+        if (!(obj instanceof Pair3))
             return false;
         if (this == obj)
             return true;
-        return equal(first, ((Pair1<?, ?>) obj).first)
-                && equal(second, ((Pair1<?, ?>) obj).second);
+        return equal(first, ((Pair3<?, ?>) obj).first)
+                && equal(second, ((Pair3<?, ?>) obj).second);
     }
 
     private boolean equal(Object o1, Object o2) {

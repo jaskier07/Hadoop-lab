@@ -5,7 +5,6 @@ import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.ArrayWritable;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
@@ -122,7 +121,7 @@ public class PopularityLeague extends Configured implements Tool {
 
     public static class LeagueMap extends Mapper<LongWritable, Text, IntWritable, IntWritable> {
         List<Integer> leagues = new ArrayList<>();
-        List<Pair1<Integer, Integer>> popularity = new ArrayList<>();
+        List<Pair2<Integer, Integer>> popularity = new ArrayList<>();
 
         @Override
         protected void setup(Mapper.Context context) throws IOException,InterruptedException {
@@ -143,16 +142,16 @@ public class PopularityLeague extends Configured implements Tool {
             String s = value.toString();
             String[] array = s.split("[^0-9]");
 
-            popularity.add(new Pair1<>(new Integer(array[0]), new Integer(array[1])));
+            popularity.add(new Pair2<>(new Integer(array[0]), new Integer(array[1])));
 
         }
 
         @Override
         protected void cleanup(Context context) throws IOException, InterruptedException {
             for (int i = 0; i < popularity.size(); i++) {
-                Pair1<Integer, Integer> pair1 = popularity.get(i);
+                Pair2<Integer, Integer> pair1 = popularity.get(i);
                 for (int j = i + 1; j < popularity.size(); j++) {
-                    Pair1<Integer, Integer> pair2 = popularity.get(j);
+                    Pair2<Integer, Integer> pair2 = popularity.get(j);
                     if (pair1.second > pair2.second) {
                         context.write(new IntWritable(pair1.first), new IntWritable(1));
                         context.write(new IntWritable(pair2.first), new IntWritable(0));
@@ -198,7 +197,7 @@ public class PopularityLeague extends Configured implements Tool {
 
 class Pair2<A extends Comparable<? super A>,
         B extends Comparable<? super B>>
-        implements Comparable<Pair1<A, B>> {
+        implements Comparable<Pair2<A, B>> {
 
     public final A first;
     public final B second;
@@ -210,12 +209,12 @@ class Pair2<A extends Comparable<? super A>,
 
     public static <A extends Comparable<? super A>,
             B extends Comparable<? super B>>
-    Pair1<A, B> of(A first, B second) {
-        return new Pair1<A, B>(first, second);
+    Pair2<A, B> of(A first, B second) {
+        return new Pair2<A, B>(first, second);
     }
 
     @Override
-    public int compareTo(Pair1<A, B> o) {
+    public int compareTo(Pair2<A, B> o) {
         int cmp = o == null ? 1 : (this.first).compareTo(o.first);
         return cmp == 0 ? (this.second).compareTo(o.second) : cmp;
     }
@@ -231,12 +230,12 @@ class Pair2<A extends Comparable<? super A>,
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof Pair1))
+        if (!(obj instanceof Pair2))
             return false;
         if (this == obj)
             return true;
-        return equal(first, ((Pair1<?, ?>) obj).first)
-                && equal(second, ((Pair1<?, ?>) obj).second);
+        return equal(first, ((Pair2<?, ?>) obj).first)
+                && equal(second, ((Pair2<?, ?>) obj).second);
     }
 
     private boolean equal(Object o1, Object o2) {

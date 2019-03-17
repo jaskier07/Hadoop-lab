@@ -31,7 +31,7 @@ public class Template extends Configured implements Tool {
     public int run(String[] args) throws Exception {
         Configuration conf = this.getConf();
         FileSystem fs = FileSystem.get(conf);
-        Path path = new Path("/user/lada14/lab1/tmp/");
+        Path path = new Path("/user/lada14/lab1-2/tmp/");
         fs.delete(path, true);
 
         Job jobA = Job.getInstance(conf, "Template");
