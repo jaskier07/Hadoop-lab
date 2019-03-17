@@ -1,0 +1,17 @@
+// called once
+export HADOOP_CLIENT_OPTS="-Xmx2048m $HADOOP_CLIENT_OPTS"
+export HADOOP_CLASSPATH=$JAVA_HOME/lib/tools.jar
+
+// Percentage (exercise 1)
+hadoop com.sun.tools.javac.Main Percentage.java -d build
+hdfs dfs -rm -r -skipTrash -f lab1/Percentage-output/
+jar -cvf Percentage.jar -C build/ ./
+hadoop jar Percentage.jar Percentage -D percentage=10 /user/adampap/WHVsmall lab1/Percentage-output
+hadoop fs -cat lab1/Percentage-output/part*
+
+// Top visitors (exercise 2)
+hadoop com.sun.tools.javac.Main TopVisitors.java -d build
+hdfs dfs -rm -r -skipTrash -f lab1/TopVisitors-output/
+jar -cvf TopVisitors.jar -C build/ ./
+hadoop jar TopVisitors.jar TopVisitors -D percentage=90 /user/adampap/WHVsmall lab1/TopVisitors-output
+hadoop fs -cat lab1/TopVisitors-output/part*
