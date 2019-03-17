@@ -148,9 +148,6 @@ public class TopVisitors extends Configured implements Tool {
             String visitor = visit[0] + " " + visit[1] + " " + visit[2];
             String visitee = visit[19] + " " + visit[20];
             String textToWrite = visitor + " <------- " + visitee;
-
-            //String[] visitorVisitee = new String[] { visitor, visitee };
-            //context.write(new TextArrayWritable(visitorVisitee), new IntWritable(1));
             context.write(new Text(textToWrite), new IntWritable(1));
         }
     }
@@ -160,14 +157,13 @@ public class TopVisitors extends Configured implements Tool {
         
         @Override
         public void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
-            //Text[] visitorVisiteeText = (Text[]) key.toArray();
-                        
+
             int sum = 0;
             for (IntWritable i : values) {
                 sum += i.get();
             }
 
-            visitorVisitees.add(new Pair<>(sum, new Text(key)));
+            visitorVisitees.add(new Pair<>(sum, key));
             
         }
 
@@ -176,8 +172,8 @@ public class TopVisitors extends Configured implements Tool {
             for (int i = 0; i < 10; i++) {
                 Pair<Integer, Text> pair = visitorVisitees.pollLast();
                 if (pair != null) {
-                    Text array = pair.second;//.getTextArray();
-                    context.write(array, new IntWritable(pair.first));
+                    Text textToWrite = pair.second;
+                    context.write(textToWrite, new IntWritable(pair.first));
                 }
             }
         }
@@ -196,26 +192,6 @@ public class TopVisitors extends Configured implements Tool {
             set(texts);
         }
     }
-
-    public static class TextArrayComparable implements Comparable<TextArrayComparable>  {
-        private Text textArray;
-
-        public TextArrayComparable() {   }
-
-        public TextArrayComparable(Text textArray) {
-            this.textArray = textArray;
-        }
-
-        @Override
-        public int compareTo(TextArrayComparable o) {
-            return 0;
-        }
-
-        public Text getTextArray() {
-            return textArray;
-        }
-    }
-
 }
 
 
